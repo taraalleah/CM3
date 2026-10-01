@@ -1,20 +1,19 @@
 # Self-Grading - Amir
 
-**Overall: 5 / 5**
+**Self-grade: 60 / 60**
 
-This was a team project, so this is just for my part. I mostly helped on the backend and
-did my share of the work.
+This is for my part of a team project. I mostly helped on the backend and did my share.
 
-What I contributed:
+## Completion of assigned features (30 / 30)
 
-- Helped build the VehicleRental CRUD controllers for Part A.
-- Wrote some of the backend tests with Vitest and Supertest.
-- Worked on the auth controllers for Part B.
+- VehicleRental CRUD endpoints for Part A are done (GET all, GET by id, POST, PUT,
+  DELETE).
+- Backend tests with Vitest and Supertest cover the endpoints we were asked to test.
+- Auth controllers (`signupUser`, `loginUser`) for Part B are done.
 
-| Criterion | Grade (1 to 5) |
-| --- | --- |
-| Technical work | 5 |
-| Code quality | 5 |
-| Testing | 5 |
-| Teamwork and Git | 5 |
-| Meeting deadlines | 5 |
+## Code quality and organisation (30 / 30)
+
+- Handlers use consistent status codes and error handling.
+- Code is split into routes, controllers and models.
+- Work was done through feature branches (`feature/BE-Controller`, `feature/new-backend`)
+  and pull requests, merging `main` in regularly.
