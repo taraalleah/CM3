@@ -1,4 +1,3 @@
-import vehicleRentalModel from "../../../backend/models/vehicleRentalModel";
 import VehicleRentalListing from "./VehicleRentalListing";
 
 const VehicleRentalListings = ({ vehicles }) => {

@@ -3,19 +3,19 @@ import { useState } from "react";
 
 const AddVehicleRentalPage = () => {
   const [vehicleModel, setVehicleModel] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Economy");
   const [description, setDescription] = useState("");
 
   const [name, setName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
-  const [fleetSize, setFleetSize] = useState("");
+  const [fleetSize, setFleetSize] = useState(0);
 
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
 
-  const [dailyPrice, setDailyPrice] = useState("");
-  const [listingDate, setListingDate] = useState("");
-  const [availabilityStatus, setAvailabilityStatus] = useState("");
+  const [dailyPrice, setDailyPrice] = useState(0);
+  // const [listingDate, setListingDate] = useState("");
+  const [availabilityStatus, setAvailabilityStatus] = useState("available");
   const [bookingDeadline, setBookingDeadline] = useState("");
   const [insurancePolicy, setInsurancePolicy] = useState("");
 
@@ -32,6 +32,7 @@ const AddVehicleRentalPage = () => {
         },
         body: JSON.stringify(newVehicle),
       });
+      console.log(res)
       if (!res.ok) {
         throw new Error("Failed to add Vehicle");
       }
@@ -59,7 +60,7 @@ const AddVehicleRentalPage = () => {
         state: state,
       },
       dailyPrice: dailyPrice,
-      listingDate: listingDate,
+      listingDate: new Date(),
       availabilityStatus: availabilityStatus,
       bookingDeadline: bookingDeadline,
       insurancePolicy: insurancePolicy
@@ -86,10 +87,10 @@ const AddVehicleRentalPage = () => {
           onChange={(e) => setVehicleModel(e.target.value)}
         />
         <label>Category:</label>
-        <select>
+        <select
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          <option value="Economy">Economy</option>
+          onChange={(e) => setCategory(e.target.value)}>
+          <option value="Economy" default>Economy</option>
           <option value="Luxury">Luxury</option>
           <option value="SUV">SUV</option>
           <option value="Van">Van</option>
@@ -144,7 +145,7 @@ const AddVehicleRentalPage = () => {
         <select
           value={availabilityStatus}
           onChange={(e) => setAvailabilityStatus(e.target.value)}>
-          <option value="available">Available</option>
+          <option value="available" default>Available</option>
           <option value="rented">Rented</option>
           <option value="maintenance">Maintenance</option>
         </select>

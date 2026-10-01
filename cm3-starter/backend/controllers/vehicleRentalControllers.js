@@ -17,7 +17,7 @@ const createVehicleRental = async (req, res) => {
     //const user_id = req.user._id;
     const newVehicleRental = new VehicleRental({...req.body}); // {...req.body, user_id}
     await newVehicleRental.save();
-    res.status(201).json(newProduct);
+    res.status(201).json(newVehicleRental);
 
     } catch (error) {
         console.error("Error creating Vehicle Rentals:", error);
