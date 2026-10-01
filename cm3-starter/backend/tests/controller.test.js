@@ -1,5 +1,6 @@
 const supertest = require("supertest");
 const mongoose = require("mongoose");
+const config = require("../utils/config");
 const app = require("../app");
 const VehicleRental = require("../models/vehicleRentalModel");
 const api = supertest(app);
@@ -17,8 +18,17 @@ const validRental = {
   insurancePolicy: "Test",
 };
 
-beforeEach(async () => { await VehicleRental.deleteMany({}); });
-afterAll(async () => { await mongoose.connection.close(); });
+beforeAll(async () => {
+  await mongoose.connect(config.MONGO_URI);
+});
+
+beforeEach(async () => {
+  await VehicleRental.deleteMany({});
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
 
 describe("POST /api/vehicleRentals", () => {
   it("creates a rental and returns 201", async () => {
