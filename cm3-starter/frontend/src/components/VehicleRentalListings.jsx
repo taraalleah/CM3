@@ -1,9 +1,10 @@
+import vehicleRentalModel from "../../../backend/models/vehicleRentalModel";
 import VehicleRentalListing from "./VehicleRentalListing";
 
-const VehicleRentalListings = () => {
+const VehicleRentalListings = ({ vehicles }) => {
   return (
     <div className="rental-list">
-      {products.map((vehicle) => (
+      {vehicles.map((vehicle) => (
         <VehicleRentalListing key={vehicle.id} vehicle={vehicle} />
       ))}
     </div>
