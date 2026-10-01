@@ -54,12 +54,50 @@ const getVehicleRentalById = async (req, res) => {
 
 // PUT /api/vehicleRentals/:vehicleRentalId
 const updateVehicleRental = async (req, res) => {
-  res.send("updateVehicleRental");
-};
+       const { vehicleRentalId } = req.params;
+       //const user_id = req.user._id;
 
-// DELETE /api/vehicleRentals/:vehicleRentalId
-const deleteVehicleRental = async (req, res) => {
-  res.send("deleteVehicleRental");
+     if (!mongoose.Types.ObjectId.isValid(productId)) {
+         return res.status(400).json({ message: "Invalid product ID" });
+     }
+     try {
+         const updatedVehicleRental = await VehicleRental.findOneAndUpdate(
+            { _id: vehicleRentalId},
+             { ...req.body},
+             { returnDocument: "after" },
+         );
+         if (updatedVehicleRental) {
+            res.status(200).json(updatedVehicleRental);
+        } else {
+             res.status(404).json({ message: "Vehicle not found" });
+         }
+
+     } catch (error) {
+         res.status(500).json({ message: "Failed to update a vehicle" });
+     }
+ };
+
+
+[]
+ // DELETE /products/:productId
+ const deleteVehicleRental = async (req, res) => {
+      const { vehicleRentalId } = req.params;
+       const user_id = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({ message: "Invalid vehicle ID" });
+     }
+
+     try {
+         const deleteVehicleRental = await VehicleRental.findOneAndDelete({_id: vehicleRentalId, user_id});
+         if (deleteVehicleRental){
+             res.status(204).send();
+         } else {
+             res.status(404).json({message: "vehicle not found"});
+         }
+     } catch {
+        res.status(500).json({ message: "Failed to delete a vehicle" });
+     }
 };
 
 module.exports = {
@@ -150,3 +188,107 @@ module.exports = {
 //   updateProduct,
 //   deleteProduct,
 // };
+
+/*
+describe("POST /api/vehicleRentals", () => {
+  beforeEach(async () => {
+    await VehicleRental.deleteMany({});
+  });
+
+  describe("when the payload is valid", () => {
+    it("should create a workout and return status 201", async () => {
+      await api
+        .post("/api/vehicleRentals")
+        //.set("Authorization", "bearer " + token)
+        .send({
+          title: "Situps",
+          reps: 25,
+          load: 10,
+        })
+        .expect(201);
+    });
+  });
+
+  describe("when the payload is invalid", () => {
+    it("should return status 400 when title is missing", async () => {
+      await api
+        .post("/api/vehicleRentals")
+        //.set("Authorization", "bearer " + token)
+        .send({
+          reps: 10,
+          load: 100,
+        })
+        .expect(400);
+    });
+  });
+});
+
+describe("DELETE /api/vehicleRentals/:id", () => {
+  beforeEach(async () => {
+    await Workout.deleteMany({});
+
+    await api
+      .post("/api/vehicleRentals")
+      .set("Authorization", "bearer " + token)
+      .send({
+        title: "Situps",
+        reps: 25,
+        load: 10,
+      });
+  });
+
+  it("should remove the workout and return status 200", async () => {
+    const all = await api
+      .get("/api/vehicleRentals")
+      //.set("Authorization", "bearer " + token);
+
+    const id = all.body[0]._id;
+
+    await api
+      .delete(`/api/vehicleRentals/${id}`)
+      //.set("Authorization", "bearer " + token)
+      .expect(200);
+
+    const remaining = await api
+      .get("/api/vehicleRentals")
+      //.set("Authorization", "bearer " + token);
+
+    expect(remaining.body).toHaveLength(0);
+  });
+});
+
+describe("PATCH /api/workouts/:id", () => {
+  beforeEach(async () => {
+    await VehicleRental.deleteMany({});
+
+    await api
+      .post("/api/")
+      //.set("Authorization", "bearer " + token)
+      .send({
+        title: "Situps",
+        reps: 25,
+        load: 10,
+      });
+  });
+
+  it("should persist updated fields and return status 200", async () => {
+    const all = await api
+      .get("/api/workouts")
+      //.set("Authorization", "bearer " + token);
+
+    const id = all.body[0]._id;
+
+    await api
+      .patch(`/api/vehicleRental/${id}`)
+      .set("Authorization", "bearer " + token)
+      .send({ reps: 99 })
+      .expect(200);
+
+    const updated = await api
+      .get(`/api/vehicleRental/${id}`)
+      //.set("Authorization", "bearer " + token);
+
+    expect(updated.body.reps).toBe(99);
+  });
+});
+*/
