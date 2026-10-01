@@ -65,18 +65,18 @@ const signupUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    if (!email || !password) {
+    if (!username || !password) {
       throw Error("All fields must be filled");
     }
 
-       const user = await User.findOne({ email });
+       const user = await User.findOne({ username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = createToken(user._id);
-      res.status(200).json({ email, token });
+      res.status(200).json({ username, token });
     } else {
       res.status(400);
       throw new Error("Invalid credentials");
