@@ -17,12 +17,15 @@ const EditVehicleRentalPage = () => {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [dailyPrice, setDailyPrice] = useState("");
-  //const [listingDate, setListingDate] = useState("");
+  const [listingDate, setListingDate] = useState("");
   const [availabilityStatus, setAvailabilityStatus] = useState("");
   const [bookingDeadline, setBookingDeadline] = useState("");
   const [insurancePolicy, setInsurancePolicy] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user.token;
+  
   useEffect(() => {
     const fetchVehicleRental = async () => {
       try {
@@ -32,15 +35,15 @@ const EditVehicleRentalPage = () => {
         setCategory(data.category);
         setDescription(data.description);
         //setAgency(data.agency);
-        setName(data.name);
-        setContactEmail(data.contactEmail);
-        setFleetSize(data.fleetSize);
+        setName(data.agency.name);
+        setContactEmail(data.agency.contactEmail);
+        setFleetSize(data.agency.fleetSize);
         //setLocation(data.location);
-        setCity(data.city);
-        setState(data.state);
+        setCity(data.location.city);
+        setState(data.location.state);
         setDailyPrice(data.dailyPrice);
-        //setListingDate(data.listingDate);
-        setListingDate(data.listingDate ? new Date(data.listingDate).toISOString().split("T")[0] : "");
+        setListingDate(data.listingDate);
+       //setListingDate(data.listingDate ? new Date(data.listingDate).toISOString().split("T")[0] : "");
         setAvailabilityStatus(data.availabilityStatus);
         setBookingDeadline(data.bookingDeadline);
         setInsurancePolicy(data.insurancePolicy);
@@ -97,7 +100,7 @@ const EditVehicleRentalPage = () => {
     };
 
     updateVehicleRental(updatedVehicleRental);
-    return navigate(`/vehicleRentals/${id}`);
+    return navigate(`/vehicles/${id}`);
   };
 
   if (loading) {

@@ -10,6 +10,9 @@ const VehicleRentalPage = ({isAuthenticated}) => {
 
   console.log(isAuthenticated)
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user.token;
+
   const deleteVehicleRental = async (vehicleRentalId) => {
     try {
       const res = await fetch(`/api/vehicleRentals/${vehicleRentalId}`, {
