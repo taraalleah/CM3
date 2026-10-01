@@ -1,0 +1,829 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Vehicle Rental API",
+    "description": "API for user authentication and vehicle rental listings.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000/api",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User registration and authentication"
+    },
+    {
+      "name": "Vehicle Rentals",
+      "description": "Vehicle rental listing operations"
+    }
+  ],
+  "paths": {
+    "/users/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Log in a user",
+        "description": "Authenticates a user and returns a JWT token. This endpoint is public.",
+        "operationId": "loginUser",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials or missing fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Invalid credentials"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/signup": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register a new user",
+        "description": "Creates a new user account and returns a JWT token. This endpoint is public.",
+        "operationId": "signupUser",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user data or username already in use",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicleRentals": {
+      "get": {
+        "tags": [
+          "Vehicle Rentals"
+        ],
+        "summary": "Get all vehicle rentals",
+        "description": "Returns all vehicle rental listings. This endpoint is public.",
+        "operationId": "getAllVehicleRentals",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Vehicle rentals retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VehicleRental"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to retrieve vehicle rentals",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "Failed to retrieve Vehicle Rentals"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Vehicle Rentals"
+        ],
+        "summary": "Create a vehicle rental",
+        "description": "Creates a new vehicle rental listing. Requires JWT authentication.",
+        "operationId": "createVehicleRental",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleRentalCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Vehicle rental created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleRental"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicleRentals/{vehicleRentalId}": {
+      "get": {
+        "tags": [
+          "Vehicle Rentals"
+        ],
+        "summary": "Get a vehicle rental by ID",
+        "description": "Returns a vehicle rental by its MongoDB ObjectId. This endpoint is public.",
+        "operationId": "getVehicleRentalById",
+        "security": [],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/VehicleRentalId"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vehicle rental retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleRental"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid vehicle rental ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "Invalid vehicleRental ID"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vehicle rental not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "VehicleRental is not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to retrieve vehicle rental",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "Failed to retrieve a vehicleRental"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Vehicle Rentals"
+        ],
+        "summary": "Update a vehicle rental",
+        "description": "Updates a vehicle rental owned by the authenticated user. Requires JWT authentication.",
+        "operationId": "updateVehicleRental",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/VehicleRentalId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleRentalUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vehicle rental updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleRental"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid vehicle rental ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "Invalid vehicleRental ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "404": {
+            "description": "Vehicle not found or not owned by authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "Vehicle not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to update vehicle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "Failed to update a vehicle"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Vehicle Rentals"
+        ],
+        "summary": "Delete a vehicle rental",
+        "description": "Deletes a vehicle rental owned by the authenticated user. Requires JWT authentication.",
+        "operationId": "deleteVehicleRental",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/VehicleRentalId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Vehicle rental deleted successfully"
+          },
+          "400": {
+            "description": "Invalid vehicle ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "Invalid vehicle ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "404": {
+            "description": "Vehicle not found or not owned by authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "vehicle not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to delete vehicle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessageResponse"
+                },
+                "example": {
+                  "message": "Failed to delete a vehicle"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT token returned by the /login or /signup endpoint. Enter the token without the 'Bearer ' prefix."
+      }
+    },
+    "parameters": {
+      "VehicleRentalId": {
+        "name": "vehicleRentalId",
+        "in": "path",
+        "required": true,
+        "description": "MongoDB ObjectId of the vehicle rental",
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{24}$",
+          "example": "65f1a2b3c4d5e6f789012345"
+        }
+      },
+      "Limit": {
+        "name": "_limit",
+        "in": "query",
+        "required": false,
+        "description": "Optional number of vehicle rentals to limit the query to. Note: the current controller calculates this value but does not use it in the response for the requested vehicle.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "example": 10
+        }
+      }
+    },
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "john_doe"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "MySecurePassword123"
+          }
+        }
+      },
+      "SignupRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "username",
+          "password",
+          "phone_number",
+          "licenseNumber",
+          "date_of_birth",
+          "address"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "username": {
+            "type": "string",
+            "example": "john_doe"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "MySecurePassword123"
+          },
+          "phone_number": {
+            "type": "string",
+            "example": "+358401234567"
+          },
+          "licenseNumber": {
+            "type": "string",
+            "example": "DL12345678"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date",
+            "example": "1990-05-15"
+          },
+          "address": {
+            "$ref": "#/components/schemas/UserAddress"
+          }
+        }
+      },
+      "UserAddress": {
+        "type": "object",
+        "required": [
+          "licenseExpiryDate",
+          "city",
+          "yearsOfExperience"
+        ],
+        "properties": {
+          "licenseExpiryDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2030-05-15"
+          },
+          "city": {
+            "type": "string",
+            "example": "Helsinki"
+          },
+          "yearsOfExperience": {
+            "type": "number",
+            "example": 8
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "required": [
+          "username",
+          "token"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "john_doe"
+          },
+          "token": {
+            "type": "string",
+            "description": "JWT authentication token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      },
+      "VehicleRentalCreate": {
+        "type": "object",
+        "required": [
+          "vehicleModel",
+          "category",
+          "description",
+          "agency",
+          "location",
+          "dailyPrice",
+          "insurancePolicy"
+        ],
+        "properties": {
+          "vehicleModel": {
+            "type": "string",
+            "example": "Toyota Corolla"
+          },
+          "category": {
+            "type": "string",
+            "example": "Sedan"
+          },
+          "description": {
+            "type": "string",
+            "example": "Comfortable and fuel-efficient sedan suitable for city driving."
+          },
+          "agency": {
+            "$ref": "#/components/schemas/Agency"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "dailyPrice": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "example": 49.99
+          },
+          "listingDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-01T10:00:00.000Z"
+          },
+          "availabilityStatus": {
+            "type": "string",
+            "enum": [
+              "available",
+              "rented",
+              "maintenance"
+            ],
+            "default": "available",
+            "example": "available"
+          },
+          "bookingDeadline": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-10-15T23:59:59.000Z"
+          },
+          "insurancePolicy": {
+            "type": "string",
+            "example": "Full coverage insurance"
+          }
+        }
+      },
+      "VehicleRentalUpdate": {
+        "type": "object",
+        "properties": {
+          "vehicleModel": {
+            "type": "string",
+            "example": "Toyota Corolla"
+          },
+          "category": {
+            "type": "string",
+            "example": "Sedan"
+          },
+          "description": {
+            "type": "string",
+            "example": "Updated vehicle description."
+          },
+          "agency": {
+            "$ref": "#/components/schemas/Agency"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "dailyPrice": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "example": 54.99
+          },
+          "listingDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-01T10:00:00.000Z"
+          },
+          "availabilityStatus": {
+            "type": "string",
+            "enum": [
+              "available",
+              "rented",
+              "maintenance"
+            ],
+            "example": "rented"
+          },
+          "bookingDeadline": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-10-20T23:59:59.000Z"
+          },
+          "insurancePolicy": {
+            "type": "string",
+            "example": "Full coverage insurance"
+          }
+        }
+      },
+      "VehicleRental": {
+        "type": "object",
+        "required": [
+          "id",
+          "vehicleModel",
+          "category",
+          "description",
+          "agency",
+          "location",
+          "dailyPrice",
+          "availabilityStatus",
+          "insurancePolicy"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Virtual ID generated from MongoDB _id",
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "example": "65f1a2b3c4d5e6f789012345"
+          },
+          "_id": {
+            "type": "string",
+            "description": "MongoDB document ID",
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "example": "65f1a2b3c4d5e6f789012345"
+          },
+          "vehicleModel": {
+            "type": "string",
+            "example": "Toyota Corolla"
+          },
+          "category": {
+            "type": "string",
+            "example": "Sedan"
+          },
+          "description": {
+            "type": "string",
+            "example": "Comfortable and fuel-efficient sedan suitable for city driving."
+          },
+          "agency": {
+            "$ref": "#/components/schemas/Agency"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "dailyPrice": {
+            "type": "number",
+            "format": "float",
+            "example": 49.99
+          },
+          "listingDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-01T10:00:00.000Z"
+          },
+          "availabilityStatus": {
+            "type": "string",
+            "enum": [
+              "available",
+              "rented",
+              "maintenance"
+            ],
+            "example": "available"
+          },
+          "bookingDeadline": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-10-15T23:59:59.000Z"
+          },
+          "insurancePolicy": {
+            "type": "string",
+            "example": "Full coverage insurance"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-01T10:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-01T10:00:00.000Z"
+          }
+        }
+      },
+      "Agency": {
+        "type": "object",
+        "required": [
+          "name",
+          "contactEmail"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Helsinki Car Rentals"
+          },
+          "contactEmail": {
+            "type": "string",
+            "format": "email",
+            "example": "contact@helsinkicars.example"
+          },
+          "fleetSize": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 50
+          }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "required": [
+          "city",
+          "state"
+        ],
+        "properties": {
+          "city": {
+            "type": "string",
+            "example": "Helsinki"
+          },
+          "state": {
+            "type": "string",
+            "example": "Uusimaa"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Invalid credentials"
+          }
+        }
+      },
+      "ErrorMessageResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Vehicle not found"
+          }
+        }
+      }
+    }
+  }
+}
