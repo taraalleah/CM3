@@ -1,4 +1,5 @@
 import VehicleRentalListings from "../components/VehicleRentalListings";
+import { useState, useEffect } from "react";
 
 const Home = () => {
 
