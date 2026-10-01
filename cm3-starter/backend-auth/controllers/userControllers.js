@@ -6,55 +6,54 @@ const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
 };
 
-
 const signupUser = async (req, res) => {
   const { 
-    fullName,
-    email,
+    name,
+    username,
     password,
-    phoneNumber,
-    gender,
+    phone_number,
+    licenseNumber,
     date_of_birth,
-    accountType
-    } = req.body;
+    address
+  } = req.body;
 
   try {
     if (
-        !fullName ||
-        !email ||
+        !name ||
+        !username ||
         !password ||
-        !phoneNumber ||
-        !gender ||
+        !phone_number ||
+        !licenseNumber ||
         !date_of_birth ||
-        !accountType
+        !address
     ) {
         res.status(400);
         throw new Error("Please add all fields");
     }
 
-    const exists = await User.findOne({ email });
+    const exists = await User.findOne({ username });
 
     if (exists) {
-      throw Error("Email already in use");
+      throw Error("Username already in use");
     }
 
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
     const user = await User.create({ 
-        fullName,
-        email,
+        name,
+        username,
         password: hash,
-        phoneNumber,
-        gender,
+        phone_number,
+        licenseNumber,
         date_of_birth,
-        accountType
+        address
     });
 
     // create a token
     if (user){
         const token = createToken(user._id);
-        res.status(201).json({ email, token });
+        res.status(201).json({ username, token });
     } else {
         res.status(400);
         throw new Error("Invalid user data");

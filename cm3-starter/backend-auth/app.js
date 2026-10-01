@@ -3,6 +3,7 @@ const cors = require('cors');
 const vehicleRentalRouter = require('./routes/vehicleRentalRouter');
 const { unknownEndpoint, errorHandler, requestLogger } = require('./middleware/customMiddleware');
 const userRouter = require("./routes/userRouter");
+
 const app = express();
 
 // Middleware

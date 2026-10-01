@@ -4,37 +4,17 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
-    fullName: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    phoneNumber: {
-      type: String,
-      required: true,
-    },
-    gender: {
-      type: String,
-      required: true,
-    },
-    date_of_birth: {
-      type: Date,
-      required: true,
-    },
-    accountType: {
-      type: String,
-      required: true,
-    },
+    name: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    phone_number: { type: String, required: true },  
+    licenseNumber: { type: String, required: true, unique: true }, 
+    date_of_birth: { type: Date, required: true },   
+    address: {
+      licenseExpiryDate: { type: Date, required: true },    
+      city: { type: String, required: true },
+      yearsOfExperience: { type: Number, required: true } 
+    }
   },
   { timestamps: true, versionKey: false }
 );
-
-module.exports = mongoose.model("User", userSchema);
