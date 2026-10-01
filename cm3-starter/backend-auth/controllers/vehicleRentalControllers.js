@@ -15,89 +15,113 @@ const getAllVehicleRentals = async (req, res) => {
 const createVehicleRental = async (req, res) => {
   try {
     const user_id = req.user._id;
-    const newVehicleRental = new VehicleRental(...req.body, user_id);
+    const newVehicleRental = new VehicleRental({ ...req.body, user_id });
     await newVehicleRental.save();
     res.status(201).json(newVehicleRental);
-    } catch (error) {
+  } catch (error) {
     if (error.name === "ValidationError") {
-        return res.status(400).json({ message: error.message });
+      return res.status(400).json({ message: error.message });
     }
     res.status(500).json({ error: "Server Error" });
-    }
+  }
 };
 
 // GET /api/vehicleRentals/:vehicleRentalId
 const getVehicleRentalById = async (req, res) => {
   const { vehicleRentalId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(vehicleRentalId)) {
-        return res.status(400).json({ message: "Invalid vehicleRental ID" });
-    }
+  if (!mongoose.Types.ObjectId.isValid(vehicleRentalId)) {
+    return res.status(400).json({ message: "Invalid vehicleRental ID" });
+  }
 
-    try {
-        const vehicleRental = await VehicleRental.findById(vehicleRentalId);
-        const limit = parseInt(req.query._limit);
-        const products = limit 
-            ? await VehicleRental.find({}).sort({ createdAt: -1 }).limit(limit)
-            : await VehicleRental.find({}).sort({ createdAt: -1 });
-        if (vehicleRental) {
-            res.status(200).json(vehicleRental);
-        } else {
-            res.status(404).json({message: "VehicleRental is not found"});
-        }
-    } catch (error) {
-        res.status(500).json({ message: "Failed to retrieve a vehicleRental" });
+  try {
+    const vehicleRental = await VehicleRental.findOne({
+      _id: vehicleRentalId,
+      ...(req.user
+        ? {
+            $or: [
+              { user_id: req.user._id },
+              { user_id: { $exists: false } },
+              { user_id: null },
+            ],
+          }
+        : {}),
+    });
+
+    if (vehicleRental) {
+      res.status(200).json(vehicleRental);
+    } else {
+      res.status(404).json({ message: "VehicleRental is not found" });
     }
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve a vehicleRental" });
+  }
 };
 
 
 
 // PUT /api/vehicleRentals/:vehicleRentalId
 const updateVehicleRental = async (req, res) => {
-       const { vehicleRentalId } = req.params;
-       const user_id = req.user._id;
+  const { vehicleRentalId } = req.params;
+  const user_id = req.user._id;
 
-     if (!mongoose.Types.ObjectId.isValid(vehicleRentalId)) {
-         return res.status(400).json({ message: "Invalid vehicleRental ID" });
-     }
-     try {
-         const updatedVehicleRental = await VehicleRental.findOneAndUpdate(
-            { _id: vehicleRentalId, user_id},
-             { ...req.body},
-             { returnDocument: "after" },
-         );
-         if (updatedVehicleRental) {
-            res.status(200).json(updatedVehicleRental);
-        } else {
-             res.status(404).json({ message: "Vehicle not found" });
-         }
+  if (!mongoose.Types.ObjectId.isValid(vehicleRentalId)) {
+    return res.status(400).json({ message: "Invalid vehicleRental ID" });
+  }
 
-     } catch (error) {
-         res.status(500).json({ message: "Failed to update a vehicle" });
-     }
- };
+  try {
+    const updatedVehicleRental = await VehicleRental.findOneAndUpdate(
+      {
+        _id: vehicleRentalId,
+        $or: [
+          { user_id },
+          { user_id: { $exists: false } },
+          { user_id: null },
+        ],
+      },
+      { ...req.body },
+      { new: true }
+    );
+
+    if (updatedVehicleRental) {
+      res.status(200).json(updatedVehicleRental);
+    } else {
+      res.status(404).json({ message: "Vehicle not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update a vehicle" });
+  }
+};
 
 
 []
- // DELETE /products/:productId
- const deleteVehicleRental = async (req, res) => {
-      const { vehicleRentalId } = req.params;
-      const user_id = req.user._id;
+// DELETE /products/:productId
+const deleteVehicleRental = async (req, res) => {
+  const { vehicleRentalId } = req.params;
+  const user_id = req.user._id;
 
-    if (!mongoose.Types.ObjectId.isValid(vehicleRentalId)) {
-        return res.status(400).json({ message: "Invalid vehicle ID" });
-     }
+  if (!mongoose.Types.ObjectId.isValid(vehicleRentalId)) {
+    return res.status(400).json({ message: "Invalid vehicle ID" });
+  }
 
-     try {
-         const deleteVehicleRental = await VehicleRental.findOneAndDelete({_id: vehicleRentalId, user_id});
-         if (deleteVehicleRental){
-             res.status(204).send();
-         } else {
-             res.status(404).json({message: "vehicle not found"});
-         }
-     } catch {
-        res.status(500).json({ message: "Failed to delete a vehicle" });
-     }
+  try {
+    const deleteVehicleRental = await VehicleRental.findOneAndDelete({
+      _id: vehicleRentalId,
+      $or: [
+        { user_id },
+        { user_id: { $exists: false } },
+        { user_id: null },
+      ],
+    });
+
+    if (deleteVehicleRental) {
+      res.status(204).send();
+    } else {
+      res.status(404).json({ message: "vehicle not found" });
+    }
+  } catch {
+    res.status(500).json({ message: "Failed to delete a vehicle" });
+  }
 };
 
 module.exports = {

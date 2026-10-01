@@ -14,16 +14,15 @@ const getAllVehicleRentals = async (req, res) => {
 // POST /api/vehicleRentals
 const createVehicleRental = async (req, res) => {
   try {
-    //const user_id = req.user._id;
-    const newVehicleRental = new VehicleRental(...req.body);
+    const newVehicleRental = new VehicleRental(req.body);
     await newVehicleRental.save();
     res.status(201).json(newVehicleRental);
-    } catch (error) {
+  } catch (error) {
     if (error.name === "ValidationError") {
-        return res.status(400).json({ message: error.message });
+      return res.status(400).json({ message: error.message });
     }
     res.status(500).json({ error: "Server Error" });
-    }
+  }
 };
 
 // GET /api/vehicleRentals/:vehicleRentalId

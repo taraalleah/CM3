@@ -2,8 +2,10 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
+const JWT_SECRET = process.env.SECRET || "development-secret";
+
 const createToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
+  return jwt.sign({ _id }, JWT_SECRET, { expiresIn: "3d" });
 };
 
 const signupUser = async (req, res) => {
