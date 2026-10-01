@@ -13,9 +13,6 @@ const VehicleRentalPage = () => {
     try {
       const res = await fetch(`/api/vehicleRentals/${vehicleRentalId}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
       if (!res.ok) {
         throw new Error("Failed to delete vehicle rental");
@@ -34,6 +31,7 @@ const VehicleRentalPage = () => {
         }
         const data = await res.json();
         setVehicleRental(data);
+        console.log(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -82,13 +80,9 @@ const VehicleRentalPage = () => {
           <p>Availability Status: {vehicleRental.availabilityStatus}</p>
           <p>Booking Deadline: {vehicleRental.bookingDeadline}</p>
           <p>Insurance Policy: {vehicleRental.insurancePolicy}</p>
-          <button onClick={() => handleGoHome()}>Back</button>
-          {isAuthenticated && (
-            <>
+          <button onClick={() => handleGoHome()}>Back</button>    
               <button onClick={() => onDeleteClick(vehicleRental._id)}>Delete</button>
               <button onClick={() => navigate(`/edit/${vehicleRental._id}`)}>Edit</button>
-            </>
-          )}
         </>
       )}
     </div>
