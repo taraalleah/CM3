@@ -3,18 +3,54 @@ const mongoose = require('mongoose');
 
 // GET /api/vehicleRentals
 const getAllVehicleRentals = async (req, res) => {
-  res.send("getAllVehicleRentals");
+  try {
+      const vehicleRentals = await VehicleRental.find({});
+      res.status(200).json(vehicleRentals);
+  } catch (error) {
+      res.status(500).json({ message: "Failed to retrieve Vehicle Rentals" });
+  }
 };
 
 // POST /api/vehicleRentals
 const createVehicleRental = async (req, res) => {
-  res.send("createVehicleRental");
+  try {
+    //const user_id = req.user._id;
+    const newVehicleRental = new VehicleRental({...req.body}); // {...req.body, user_id}
+    await newVehicleRental.save();
+    res.status(201).json(newProduct);
+
+    } catch (error) {
+        console.error("Error creating Vehicle Rentals:", error);
+        res.status(500).json({ error: "Server Error" });
+    }
 };
+
 
 // GET /api/vehicleRentals/:vehicleRentalId
 const getVehicleRentalById = async (req, res) => {
-  res.send("getVehicleRentalById");
+  const { vehicleRentaltId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(vehicleRentaltId)) {
+        return res.status(400).json({ message: "Invalid vehicleRental ID" });
+    }
+
+    try {
+        const vehicleRental = await VehicleRental.findById(vehicleRentaltId);
+        const limit = parseInt(req.query._limit);
+        const products = limit 
+            ? await VehicleRental.find({}).sort({ createdAt: -1 }).limit(limit)
+            : await VehicleRental.find({}).sort({ createdAt: -1 });
+        if (vehicleRental) {
+            res.status(200).json(vehicleRental);
+        } else {
+            res.status(404).json({message: "VehicleRental is not found"});
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve a vehicleRental" });
+    }
 };
+
+
 
 // PUT /api/vehicleRentals/:vehicleRentalId
 const updateVehicleRental = async (req, res) => {
@@ -34,32 +70,6 @@ module.exports = {
   deleteVehicleRental,
 };
 
-// const Product = require("../models/productModel");
-// const mongoose = require("mongoose");
-
-// // GET /products
-// const getAllProducts = async (req, res) => {
-//     try {
-//         const products = await Product.find({});
-//         res.status(200).json(products);
-//     } catch (error) {
-//         res.status(500).json({ message: "Failed to retrieve products" });
-//     }
-// };
-
-// // POST /products
-// const createProduct = async (req, res) => {
-// try {
-//     const user_id = req.user._id;
-//     const newProduct = new Product({...req.body, user_id}); // add ,user_id
-//     await newProduct.save();
-//     res.status(201).json(newProduct);
-
-//     } catch (error) {
-//         console.error("Error creating product:", error);
-//         res.status(500).json({ error: "Server Error" });
-//     }
-// };
 
 // // GET /products/:productId
 // const getProductById = async (req, res) => {
