@@ -17,7 +17,7 @@ const EditVehicleRentalPage = () => {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [dailyPrice, setDailyPrice] = useState("");
-  const [listingDate, setListingDate] = useState("");
+  //const [listingDate, setListingDate] = useState("");
   const [availabilityStatus, setAvailabilityStatus] = useState("");
   const [bookingDeadline, setBookingDeadline] = useState("");
   const [insurancePolicy, setInsurancePolicy] = useState("");
@@ -39,7 +39,8 @@ const EditVehicleRentalPage = () => {
         setCity(data.city);
         setState(data.state);
         setDailyPrice(data.dailyPrice);
-        setListingDate(data.listingDate);
+        //setListingDate(data.listingDate);
+        setListingDate(data.listingDate ? new Date(data.listingDate).toISOString().split("T")[0] : "");
         setAvailabilityStatus(data.availabilityStatus);
         setBookingDeadline(data.bookingDeadline);
         setInsurancePolicy(data.insurancePolicy);
@@ -160,12 +161,12 @@ const EditVehicleRentalPage = () => {
           value={dailyPrice}
           onChange={(e) => setDailyPrice(e.target.value)}
         />
-        <label>Listing Date:</label>
+        {/* <label>Listing Date:</label>
         <input
           type="date"
           value={listingDate}
           onChange={(e) => setListingDate(e.target.value)}
-        />
+        /> */}
         <label>Availability Status:</label>
         <select
           value={availabilityStatus}
