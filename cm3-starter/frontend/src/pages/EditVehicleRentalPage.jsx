@@ -195,4 +195,3 @@ const EditVehicleRentalPage = () => {
 };
 
 export default EditVehicleRentalPage;
-
