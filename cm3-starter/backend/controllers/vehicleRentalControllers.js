@@ -140,3 +140,109 @@ module.exports = {
 //   updateProduct,
 //   deleteProduct,
 // };
+
+
+/*
+describe("POST /api/workouts", () => {
+  beforeEach(async () => {
+    await Workout.deleteMany({});
+  });
+
+  describe("when the payload is valid", () => {
+    it("should create a workout and return status 201", async () => {
+      await api
+        .post("/api/workouts")
+        .set("Authorization", "bearer " + token)
+        .send({
+          title: "Situps",
+          reps: 25,
+          load: 10,
+        })
+        .expect(201);
+    });
+  });
+
+  describe("when the payload is invalid", () => {
+    it("should return status 400 when title is missing", async () => {
+      await api
+        .post("/api/workouts")
+        .set("Authorization", "bearer " + token)
+        .send({
+          reps: 10,
+          load: 100,
+        })
+        .expect(400);
+    });
+  });
+});
+
+describe("DELETE /api/workouts/:id", () => {
+  beforeEach(async () => {
+    await Workout.deleteMany({});
+
+    await api
+      .post("/api/workouts")
+      .set("Authorization", "bearer " + token)
+      .send({
+        title: "Situps",
+        reps: 25,
+        load: 10,
+      });
+  });
+
+  it("should remove the workout and return status 200", async () => {
+    const all = await api
+      .get("/api/workouts")
+      .set("Authorization", "bearer " + token);
+
+    const id = all.body[0]._id;
+
+    await api
+      .delete(`/api/workouts/${id}`)
+      .set("Authorization", "bearer " + token)
+      .expect(200);
+
+    const remaining = await api
+      .get("/api/workouts")
+      .set("Authorization", "bearer " + token);
+
+    expect(remaining.body).toHaveLength(0);
+  });
+});
+
+describe("PATCH /api/workouts/:id", () => {
+  beforeEach(async () => {
+    await Workout.deleteMany({});
+
+    await api
+      .post("/api/workouts")
+      .set("Authorization", "bearer " + token)
+      .send({
+        title: "Situps",
+        reps: 25,
+        load: 10,
+      });
+  });
+
+  it("should persist updated fields and return status 200", async () => {
+    const all = await api
+      .get("/api/workouts")
+      .set("Authorization", "bearer " + token);
+
+    const id = all.body[0]._id;
+
+    await api
+      .patch(`/api/workouts/${id}`)
+      .set("Authorization", "bearer " + token)
+      .send({ reps: 99 })
+      .expect(200);
+
+    const updated = await api
+      .get(`/api/workouts/${id}`)
+      .set("Authorization", "bearer " + token);
+
+    expect(updated.body.reps).toBe(99);
+  });
+});
+
+*/
