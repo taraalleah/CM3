@@ -18,6 +18,10 @@ const createVehicleRental = async (req, res) => {
     const newVehicleRental = new VehicleRental(req.body);
     await newVehicleRental.save();
     res.status(201).json(newVehicleRental);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 488094210e259c9469d623d7c7148355826047a5
     } catch (error) {
     if (error.name === "ValidationError") {
         return res.status(400).json({ message: error.message });
