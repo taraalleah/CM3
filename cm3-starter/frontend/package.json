@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:view": "rm -rf view && cd ../frontend && npm run build && cp -r dist ../backend/view",
+    "push": "git add . && git commit -m \"Update frontend build\" && git push",
+    "deploy": "npm run build:view && npm run push"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -26,4 +29,3 @@
     "vite": "^8.3.0"
   }
 }
-
