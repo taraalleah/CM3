@@ -1,120 +1,49 @@
+const supertest = require("supertest");
+const mongoose = require("mongoose");
+const app = require("../app");
+const VehicleRental = require("../models/vehicleRentalModel");
+const api = supertest(app);
+
+const validRental = {
+  vehicleModel: "Test",
+  category: "Big",
+  description: "Good quality",
+  agency: { name: "Test", contactEmail: "fih@mail.com", fleetSize: 20 },
+  location: { city: "Helsinki", state: "Uusimaa" },
+  dailyPrice: 12,
+  listingDate: "2026-10-01",
+  availabilityStatus: "available",
+  bookingDeadline: "2026-12-01",
+  insurancePolicy: "Test",
+};
+
+beforeEach(async () => { await VehicleRental.deleteMany({}); });
+afterAll(async () => { await mongoose.connection.close(); });
 
 describe("POST /api/vehicleRentals", () => {
-  beforeEach(async () => {
-    await Workout.deleteMany({});
+  it("creates a rental and returns 201", async () => {
+    await api.post("/api/vehicleRentals").send(validRental).expect(201);
   });
-
-  describe("when the payload is valid", () => {
-    it("should create a vehicle rental and return status 201", async () => {
-      await api
-        .post("/api/vehicleRentals")
-        //.set("Authorization", "bearer " + token)
-        .send({
-          vehicleModel: "Test",
-          category: "Big",
-          description: "Good quality",
-          agency: "Test",
-            contactEmail: "fih@mail.com",
-            fleetSize: 20,
-          location: {
-            city: "Helsinki",
-            state: "New york",
-          },
-          dailyPrice: 12,
-          listingDate: "some date",
-          availabilityStatus: 'available',
-          bookingDeadline: "some date",
-          insurancePolicy: "Test",
-        })
-        .expect(201);
-    });
-  });
-
-  describe("when the payload is invalid", () => {
-    it("should return status 400 when title is missing", async () => {
-      await api
-        .post("/api/vehicleRentals")
-        //.set("Authorization", "bearer " + token)
-        .send({
-          description: "Good quality",
-          agency: "Test",
-            contactEmail: "fih@mail.com",
-            fleetSize: 20,
-          location: {
-            city: "Helsinki",
-            state: "New york",
-          },
-        })
-        .expect(400);
-    });
+  it("returns 400 when required fields are missing", async () => {
+    const { vehicleModel, ...invalid } = validRental;
+    await api.post("/api/vehicleRentals").send(invalid).expect(400);
   });
 });
 
 describe("DELETE /api/vehicleRentals/:id", () => {
-  beforeEach(async () => {
-    await Workout.deleteMany({});
-
-    await api
-      .post("/api/vehicleRentals")
-      //.set("Authorization", "bearer " + token)
-      .send({
-        title: "Situps",
-        reps: 25,
-        load: 10,
-      });
-  });
-
-  it("should remove the workout and return status 200", async () => {
-    const all = await api
-      .get("/api/vehicleRentals")
-      //.set("Authorization", "bearer " + token);
-
-    const id = all.body[0]._id;
-
-    await api
-      .delete(`/api/vehicleRentals/${id}`)
-      //.set("Authorization", "bearer " + token)
-      .expect(200);
-
-    const remaining = await api
-      .get("/api/vehicleRentals")
-      //.set("Authorization", "bearer " + token);
-
-    expect(remaining.body).toHaveLength(0);
+  it("removes the rental", async () => {
+    const created = await VehicleRental.create(validRental);
+    await api.delete(`/api/vehicleRentals/${created.id}`).expect(204);
+    expect(await VehicleRental.countDocuments()).toBe(0);
   });
 });
 
-describe("PATCH /api/vehicleRentals/:id", () => {
-  beforeEach(async () => {
-    await Workout.deleteMany({});
-
-    await api
-      .post("/api/vehicleRentals")
-      //.set("Authorization", "bearer " + token)
-      .send({
-        title: "Situps",
-        reps: 25,
-        load: 10,
-      });
-  });
-
-  it("should persist updated fields and return status 200", async () => {
-    const all = await api
-      .get("/api/vehicleRentals")
-      //.set("Authorization", "bearer " + token);
-
-    const id = all.body[0]._id;
-
-    await api
-      .patch(`/api/vehicleRentals/${id}`)
-      //.set("Authorization", "bearer " + token)
-      .send({ reps: 99 })
-      .expect(200);
-
-    const updated = await api
-      .get(`/api/vehicleRentals/${id}`)
-      //.set("Authorization", "bearer " + token);
-
-    expect(updated.body.reps).toBe(99);
+describe("PUT /api/vehicleRentals/:id", () => {
+  it("persists updated fields", async () => {
+    const created = await VehicleRental.create(validRental);
+    await api.put(`/api/vehicleRentals/${created.id}`)
+      .send({ dailyPrice: 99 }).expect(200);
+    const updated = await api.get(`/api/vehicleRentals/${created.id}`).expect(200);
+    expect(updated.body.dailyPrice).toBe(99);
   });
 });
