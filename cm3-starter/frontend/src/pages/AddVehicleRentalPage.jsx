@@ -20,6 +20,9 @@ const AddVehicleRentalPage = () => {
   const [insurancePolicy, setInsurancePolicy] = useState("");
 
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user.token;
+
 
   const navigate = useNavigate();
 
@@ -29,6 +32,7 @@ const AddVehicleRentalPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(newVehicle),
       });
