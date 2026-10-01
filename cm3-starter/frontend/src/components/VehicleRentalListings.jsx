@@ -3,7 +3,9 @@ import VehicleRentalListing from "./VehicleRentalListing";
 const VehicleRentalListings = () => {
   return (
     <div className="rental-list">
-      <VehicleRentalListing />
+      {products.map((vehicle) => (
+        <VehicleRentalListing key={vehicle.id} vehicle={vehicle} />
+      ))}
     </div>
   );
 };
